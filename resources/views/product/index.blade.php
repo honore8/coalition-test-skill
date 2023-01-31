@@ -8,12 +8,11 @@
 <div class="container" id="app">
     <h3 class="mt-3">CT - Laravel Test / Honoré Lata ( <a href="mailto:lkh@honore-lata.com">lkh@honore-lata.com</a> )</h3>
 
-    @include('product.notifications')
-
     <br>
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ route('product.new') }}" method="POST">
+            <div id="message"></div>
+            <form id="save-product">
                 @csrf
                 <div class="card">
                     <div class="card-header">
@@ -57,15 +56,15 @@
                                 <th scope="col">Product Name</th>
                                 <th scope="col">Quantity in stock</th>
                                 <th scope="col">Price per item</th>
-                                <th scope="col">Datetime submitted</th>
+                                <th scope="col">Date time submitted</th>
                                 <th scope="col">Total Value</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="product-body">
                             @foreach ($products as $item)
                                 
-                            <tr v-for="item in items">
+                            <tr>
                                 <th scope="row">{{ $item['count'] }}</th>
                                 <td>{{ $item['name'] }}</td>
                                 <td>{{ $item['quantity'] }}</td>
@@ -89,6 +88,52 @@
 </div>
 @endsection
 
+
 @section('scripts')
+    <script>
+        $("#save-product").submit(function(e) {
+            e.preventDefault();
+            let form_data = new FormData(this);
+            $(document).find("span.invalid-feedback").remove();
+            $(document).find("#message").empty();
+            $.ajax({
+                url: "{{ route('product.new') }}"
+                , type: "POST"
+                , data: form_data
+                , cache: false
+                , contentType: false
+                , processData: false
+                , success: function(response) {
+                    $("#message").append('<div class="alert alert-success mt-3 mt-n3 mb-3 text-center h4" role="alert"> <strong>Product Save successfully</strong></div>');
+                    let products = response.products;
+                    let htmlContent = "";
+                    for (let index = 0; index < products.length; index++) {
+                      htmlContent+= `<td>
+                             <th scope="row">${products[0].count}</th>
+                             <td>${products[0].name}</td>
+                             <td>${products[0].quantity}</td>
+                             <td>${products[0].price}</td>
+                             <td>${products[0].submitted}</td>
+                             <td>${products[0].total_value}</td>
+                             <td> <a href="@{{route('edit.product', ${products[0].count})}}" class="btn btn-primary btn-xs"> Edit </a> </td>
+                         </tr>
+                         `;
+                        
+                    }
+                    console.log(htmlContent);
+                    let aaaaaaaa = document.getElementById('product-body');
+                    aaaaaaaa.innerHTML(htmlContent)
+                }
+                , error: function(response) {
+                    $.each(response.responseJSON.errors, function(field_name, error) {
+                        console.log(field_name)
+                        var field = $(document).find('[name=' + field_name + ']')
+                        field.addClass('is-invalid')
+                        field.after('<span class="invalid-feedback my-1" role="alert"> <strong>' + error + '</strong></span>')
+                    })
+                }
+            })
+        })
+    </script>
 
 @endsection

@@ -8,9 +8,7 @@ use Throwable;
 use Illuminate\Support\Facades\File;
 
 /**
- * We will not use Laravel eloquent models since we will not be interacting with the database.
- * To make things easier we will just use arrays to store and retrieve data 
- * from the Json File.
+ * Store and retrieve data from the Json File.
  */
 class ProductRepository
 {
@@ -61,8 +59,7 @@ class ProductRepository
      */
     public function getProductById($productId)
     {
-        //the only way to get a get  a product is to loop through all items
-        //and return the one that the count matches the productId.
+        //Return the one that the count matches the productId.
         $products = $this->getAllProducts();
 
         foreach ($products as $product) {
@@ -70,8 +67,7 @@ class ProductRepository
                 return $product;
         }
 
-        //if we reach here, it means the product is not found
-        //throw an exception 
+
         throw new Exception("Product Not Found");
     }
 

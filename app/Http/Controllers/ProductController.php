@@ -17,11 +17,10 @@ class ProductController extends Controller
         $this->productRepository = $productRepository;
     }
 
-
+    //product list
     public function productList()
     {
         $products = $this->productRepository->getAllProducts();
-        // dd($products);
         return view('product.index', compact('products'));
     }
 
@@ -34,27 +33,26 @@ class ProductController extends Controller
                 'quantity' => 'required|numeric',
                 'price' => 'required|numeric'
             ]);
-    
+
             //save the product
             $data = $request->except('_token');
-    
+
             try {
                 $this->productRepository->addProduct($data);
-    
+
                 session()->flash('success', 'Product Save successfully');
             } catch (\Exception $e) {
                 $errorMessage = $e->getMessage();
-    
+
                 session()->flash('error', $errorMessage);
             }
-    
-            return back();
+
+            return response()->json(['products' => $this->productRepository->getAllProducts()]);
             # code...
         }
-
-        
     }
 
+    //edit product by productId
     public function editProduct(Request $request, $productId)
     {
         if ($request->isMethod('POST')) {
@@ -81,7 +79,7 @@ class ProductController extends Controller
             session()->flash('error', $errorMessage);
             return back();
         }
-        
+
         return view('product.edit', compact('product'));
     }
 }

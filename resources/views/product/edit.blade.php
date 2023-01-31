@@ -6,17 +6,17 @@
 @section('content')
 <div class="container" id="app">
     <h3 class="mt-3">CT - Laravel Test / Honoré Lata ( <a href="mailto:lkh@honore-lata.com">lkh@honore-lata.com</a> )</h3>
-
-    @include('product.notifications')
-
     <br>
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ route('edit.product', $product['count']) }}" method="POST">
+            <div id="message"></div>
+
+            <form id="update-product">
                 @csrf
                 <div class="card">
                     <div class="card-header">
                         <strong>Update a product</strong>
+                        <a href="{{route('list.product')}}" class="float-end"> Home</a>
                     </div>
                     <div class="card-body">
 
@@ -44,4 +44,36 @@
     <br>
 
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    let url = "{{ route('edit.product', $product['count']) }}";
+    $("#update-product").submit(function(e) {
+        e.preventDefault();
+        let form_data = new FormData(this);
+        $(document).find("span.invalid-feedback").remove();
+        $(document).find("#message").empty();
+        $.ajax({
+            url: url
+            , type: "POST"
+            , data: form_data
+            , cache: false
+            , contentType: false
+            , processData: false
+            , success: function(response) {
+                $("#message").append('<div class="alert alert-success mt-3 mt-n3 mb-3 text-center h4" role="alert"> <strong>Product Update successfully</strong></div>');
+            }
+            , error: function(response) {
+                $.each(response.responseJSON.errors, function(field_name, error) {
+                    console.log(field_name)
+                    var field = $(document).find('[name=' + field_name + ']')
+                    field.addClass('is-invalid')
+                    field.after('<span class="invalid-feedback my-1" role="alert"> <strong>' + error + '</strong></span>')
+                })
+            }
+        })
+    })
+</script>
+
 @endsection
