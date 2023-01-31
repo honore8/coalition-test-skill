@@ -49,7 +49,7 @@
                     <strong>List of Items</strong>
                 </div>
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table" id="product-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -61,7 +61,7 @@
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="product-body">
+                        <tbody>
                             @foreach ($products as $item)
                                 
                             <tr>
@@ -105,24 +105,8 @@
                 , processData: false
                 , success: function(response) {
                     $("#message").append('<div class="alert alert-success mt-3 mt-n3 mb-3 text-center h4" role="alert"> <strong>Product Save successfully</strong></div>');
-                    let products = response.products;
-                    let htmlContent = "";
-                    for (let index = 0; index < products.length; index++) {
-                      htmlContent+= `<td>
-                             <th scope="row">${products[0].count}</th>
-                             <td>${products[0].name}</td>
-                             <td>${products[0].quantity}</td>
-                             <td>${products[0].price}</td>
-                             <td>${products[0].submitted}</td>
-                             <td>${products[0].total_value}</td>
-                             <td> <a href="@{{route('edit.product', ${products[0].count})}}" class="btn btn-primary btn-xs"> Edit </a> </td>
-                         </tr>
-                         `;
-                        
-                    }
-                    console.log(htmlContent);
-                    let aaaaaaaa = document.getElementById('product-body');
-                    aaaaaaaa.innerHTML(htmlContent)
+                         $("#product-table").load(window.location.href + " #product-table" );
+                    products = response.products;
                 }
                 , error: function(response) {
                     $.each(response.responseJSON.errors, function(field_name, error) {
