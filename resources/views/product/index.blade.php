@@ -106,7 +106,6 @@
                 , success: function(response) {
                     $("#message").append('<div class="alert alert-success mt-3 mt-n3 mb-3 text-center h4" role="alert"> <strong>Product Save successfully</strong></div>');
                          $("#product-table").load(window.location.href + " #product-table" );
-                    products = response.products;
                 }
                 , error: function(response) {
                     $.each(response.responseJSON.errors, function(field_name, error) {
