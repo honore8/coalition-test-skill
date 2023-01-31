@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 //Route for list, add and edit product
 Route::controller(ProductController::class)->group(function () {
-    Route::get('products-list', 'productList')->name('list.product');
-    Route::match(['GET,', 'POST'], 'new-product', 'newProduct')->name('new.product');
-    Route::match(['GET,', 'POST'], 'edit-product/{product}', 'editProduct')->name('edit.product');
+    Route::get('/', 'productList')->name('list.product');
+    Route::match(['GET', 'POST'], 'new-product', 'newProduct')->name('product.new');
+    Route::match(['GET', 'POST'], 'edit-product/{product}', 'editProduct')->name('edit.product');
 });
